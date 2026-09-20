@@ -1,1 +1,61 @@
-<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Santana Drips</title><style>*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}body{background:#f5f5f5}.top{background:#000;color:#fff;padding:12px;text-align:center;font-weight:900}.top span{color:#FFD700}.flash{background:#ff6a00;color:#fff;text-align:center;padding:8px;font-weight:700}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}.card{background:#fff;border-radius:12px;overflow:hidden;position:relative}.card img{width:100%;height:150px;object-fit:cover}.info{padding:8px}.tag{position:absolute;top:8px;left:8px;background:#ff3b30;color:#fff;padding:3px 6px;border-radius:6px;font-size:11px}.preco{color:#ff3b30;font-weight:900}.btn{width:100%;border:none;padding:10px;border-radius:8px;font-weight:800;margin-top:6px}.btn-black{background:#000;color:#ffd700}.btn-green{background:#25D366;color:#fff}.box{background:#fff;margin:10px;border-radius:12px;padding:12px}</style></head><body><div class="top">SANTANA <span>DRIPS</span></div><div class="flash">OFERTA TERMINA EM 02:15:00</div><div class="grid"><div class="card"><span class="tag">-70%</span><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400"><div class="info"><b>Tenis Nike</b><br><span class="preco">1650 MT</span><br><button class="btn btn-black" onclick="wa('Tenis Nike')">COMPRAR</button></div></div><div class="card"><span class="tag">-65%</span><img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400"><div class="info"><b>Bone</b><br><span class="preco">420 MT</span><br><button class="btn btn-black" onclick="wa('Bone')">COMPRAR</button></div></div></div><div class="box"><h3>PAGAMENTO M-Pesa</h3><p style="font-size:18px;font-weight:900">+258 85 961 3672</p><button class="btn btn-green" onclick="comp()">Enviar Comprovativo</button></div><div class="box"><h3>Falar Conosco</h3><p style="font-size:18px;font-weight:900">+27 83 783 5874</p><button class="btn btn-green" onclick="fala()">WhatsApp</button></div><script>var falarNum="27837835874";var pagarNum="258859613672";function wa(p){window.open("https://wa.me/"+falarNum+"?text=Ola quero "+p)}function fala(){window.open("https://wa.me/"+falarNum+"?text=Ola preciso de ajuda")}function comp(){window.open("https://wa.me/"+pagarNum+"?text=Fiz pagamento M-Pesa")}</script></body></html>
+<!DOCTYPE html>
+<html lang="pt"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SANTANA DRIPS</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:system-ui;background:#f6f6f6}
+header{background:#000;color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20}
+#cartBtn{background:#fff;color:#000;border:0;padding:8px 14px;border-radius:20px;font-weight:800}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 12px #0001}
+.card img{width:100%;height:170px;object-fit:cover}
+.info{padding:10px}.preco{font-weight:900;font-size:17px;margin:4px 0}
+.btn{width:100%;padding:11px;border:0;border-radius:10px;font-weight:800;margin-top:6px}
+.btn-buy{background:#000;color:#fff}.btn-cart{background:#eee;color:#000}
+#modal,#cartModal{display:none;position:fixed;inset:0;background:#000a;z-index:99;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.box{background:#fff;width:100%;max-width:400px;border-radius:18px;padding:18px;text-align:center}
+.copy{width:100%;padding:12px;border-radius:10px;border:0;margin:6px 0;font-weight:700}
+.input{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin:6px 0}
+</style>
+</head><body>
+<header><b>SANTANA DRIPS 🔥</b><button id="cartBtn" onclick="abrirCarrinho()">🛒 <span id="cartCount">0</span></button></header>
+<div class="grid" id="produtos"></div>
+<div id="modal" onclick="if(event.target==this)fechar()"><div class="box">
+<h3 id="pNome"></h3>
+<div style="background:#f2f2f2;padding:12px;border-radius:10px;margin:12px 0;text-align:left">
+<b>M-Pesa:</b> <span id="mNum">-</span> <button onclick="copiar('m')" style="float:right">📋</button><br>
+<b>e-Mola:</b> <span id="eNum">-</span> <button onclick="copiar('e')" style="float:right">📋</button>
+</div>
+<div style="text-align:left">
+<h4>📍 Dados para Entrega</h4>
+<input class="input" id="cliNome" placeholder="Seu nome completo">
+<input class="input" id="cliBairro" placeholder="Bairro / Local ex: Zimpeto">
+<input class="input" id="cliTel" placeholder="Seu número ex: 84...">
+<select class="input" id="cliPagamento"><option>M-Pesa</option><option>e-Mola</option></select>
+</div>
+<button class="copy" style="background:#25D366;color:#fff" onclick="finalizar()">✅ CONFIRMAR E ENVIAR COMPROVATIVO</button>
+<button onclick="fechar()" style="background:none;border:0;margin-top:10px">Cancelar</button>
+</div></div>
+<div id="cartModal" onclick="if(event.target==this)fecharCart()"><div class="box"><h3>Seu Carrinho</h3><div id="cartLista" style="text-align:left;margin:10px 0"></div><b>Total: <span id="cartTotal">0</span> MT</b><br><button class="copy" style="background:#000;color:#fff" onclick="pagarTudo()">PAGAR AGORA</button><button onclick="fecharCart()" style="background:none;border:0">Continuar comprando</button></div></div>
+
+<footer style="background:#000;color:#aaa;padding:22px;text-align:center;margin-top:30px">
+<div style="font-size:11px;line-height:1.7">
+<b style="color:#fff;font-size:13px">SANTANA DRIPS</b><br>Loja Oficial - Maputo • Matola • Gaza<br><br>
+<span style="font-size:8.5px;opacity:0.55;letter-spacing:0.4px">
+App criado por <a href="criador.html" style="color:#aaa;text-decoration:underline">Mr James Chihanane de Gaza</a><br>
+Contacto criador: +27 73 123 3343<br>
+© 2026 Santana Drips - Todos direitos reservados
+</span><br><br>
+<a href="criador.html" style="font-size:10px;color:#666;text-decoration:none;border:1px solid #333;padding:6px 12px;border-radius:20px">👨‍💻 Ver Criador do App</a>
+</div>
+</footer>
+
+<script>
+const def=[{nome:'Tenis Nike Air',preco:1650,foto:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500'},{nome:'Drip Completo',preco:2500,foto:'https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=500'}];
+let carrinho=JSON.parse(localStorage.getItem('santana_cart')||'[]');let atual=null;
+function getP(){let p=JSON.parse(localStorage.getItem('santana_prods')||'null');return p&&p.length?p:def}
+function render(){document.getElementById('produtos').innerHTML=getP().map((p,i)=>`<div class="card"><img src="${p.foto}"><div class="info"><div>${p.nome}</div><div class="preco">${p.preco} MT</div><button class="btn btn-buy" onclick="comprar(${i})">COMPRAR</button><button class="btn btn-cart" onclick="addCart(${i})">+ Carrinho</button></div></div>`).join('');document.getElementById('mNum').innerText=localStorage.getItem('mpesa')||'Configura no ADMIN';document.getElementById('eNum').innerText=localStorage.getItem('emola')||'Configura no ADMIN';updateCart()}
+function comprar(i){atual=getP()[i];document.getElementById('pNome').innerText=atual.nome+' - '+atual.preco+' MT';document.getElementById('modal').style.display='flex'}
+function fechar(){document.getElementById('modal').style.display='none'}
+function addCart(i){carrinho.push(getP()[i]);localStorage.setItem('santana_cart',JSON.stringify(carrinho));updateCart();alert('Adicionado! 🛒')}
+function updateCart(){document.getElementById('cartCount').innerText=carrinho.length;document.getElementById('cartLista').innerHTML=carrinho.map((p,i)=>`${p.nome} - ${p.preco}MT <button onclick="rem(${i})" style="float:right">x</button><br>`).join('')||'Vazio';let
