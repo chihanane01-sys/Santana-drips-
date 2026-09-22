@@ -1,36 +1,494 @@
 <!DOCTYPE html>
-<html lang="pt">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Criador do App</title>
-<style>
-body{font-family:system-ui;background:#000;color:#fff;text-align:center;padding:20px}
-.box{background:#111;border-radius:22px;padding:28px;max-width:380px;margin:30px auto;border:1px solid #222}
-.foto{width:90px;height:90px;background:linear-gradient(135deg,#25D366,#128C7E);border-radius:50%;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;font-size:40px}
-.btn{display:block;padding:14px;border-radius:12px;font-weight:800;text-decoration:none;margin:10px 0}
-.btn-wpp{background:#25D366;color:#fff}
-.btn-voltar{background:#222;color:#fff}
-</style>
-</head>
-<body>
-<div class="box">
-<div class="foto">👨‍💻</div>
-<h2>Mr James Chihanane</h2>
-<p style="color:#25D366;font-weight:700">Criador de Apps</p>
-<p style="color:#888;font-size:13px;margin:5px 0 15px">De Gaza, Moçambique</p>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do List</title>
+    <style>
+      :root {
+        --bg: #f4f7fb;
+        --card: #ffffff;
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --secondary: #eef2ff;
+        --text: #1f2937;
+        --muted: #6b7280;
+        --success: #10b981;
+        --danger: #ef4444;
+        --warning: #f59e0b;
+        --border: #e5e7eb;
+        --shadow: 0 10px 25px rgba(31, 41, 55, 0.08);
+      }
 
-<div style="background:#1a1a1a;padding:16px;border-radius:12px;text-align:left;font-size:14px;line-height:2">
-📱 +27 73 123 3343<br>
-📍 Gaza - Moçambique<br>
-💼 Lojas Online & Apps<br>
-🔥 Criador do Santana Drips
-</div>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-<a class="btn btn-wpp" href="https://wa.me/27731233343?text=Olá Mr James! Vi o app Santana Drips, quero um app igual!">💬 Falar no WhatsApp</a>
-<a class="btn btn-voltar" href="index.html">← Voltar para Loja</a>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(135deg, #eef2ff, #f8fafc);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 24px;
+      }
 
-<p style="font-size:10px;color:#444;margin-top:20px">© 2026 - App Oficial Santana Drips<br>Criado por Mr James Chihanane</p>
-</div>
-</body>
+      .app {
+        width: 100%;
+        max-width: 700px;
+        background: var(--card);
+        border-radius: 18px;
+        box-shadow: var(--shadow);
+        padding: 32px 24px;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 24px;
+        color: var(--text);
+        font-size: 2rem;
+      }
+
+      .todo-form {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .todo-form input {
+        flex: 1;
+        padding: 14px 16px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        font-size: 1rem;
+        outline: none;
+        transition: border-color 0.2s ease;
+      }
+
+      .todo-form input:focus {
+        border-color: var(--primary);
+      }
+
+      .todo-form button,
+      .filter-btn,
+      .clear-btn,
+      .delete-btn,
+      .edit-btn {
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .todo-form button {
+        background: var(--primary);
+        color: white;
+        padding: 0 18px;
+        font-weight: 700;
+        min-width: 120px;
+      }
+
+      .todo-form button:hover {
+        background: var(--primary-dark);
+      }
+
+      .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+      }
+
+      .filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .filter-btn {
+        background: var(--secondary);
+        color: var(--primary-dark);
+        padding: 8px 12px;
+        font-weight: 600;
+      }
+
+      .filter-btn.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      .clear-btn {
+        background: #fff7ed;
+        color: var(--warning);
+        padding: 8px 12px;
+        font-weight: 600;
+      }
+
+      .clear-btn:hover {
+        background: #ffedd5;
+      }
+
+      .stats {
+        margin-bottom: 14px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .todo-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .task-item {
+        background: #f9fafb;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .task-main {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .task-checkbox {
+        width: 20px;
+        height: 20px;
+        accent-color: var(--success);
+        cursor: pointer;
+      }
+
+      .task-text {
+        flex: 1;
+        color: var(--text);
+        word-break: break-word;
+      }
+
+      .task-item.completed .task-text {
+        text-decoration: line-through;
+        color: var(--muted);
+      }
+
+      .task-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .edit-btn {
+        background: #dbeafe;
+        color: #1d4ed8;
+        padding: 8px 10px;
+        font-weight: 600;
+      }
+
+      .delete-btn {
+        background: #fee2e2;
+        color: var(--danger);
+        padding: 8px 10px;
+        font-weight: 600;
+      }
+
+      .edit-btn:hover {
+        background: #bfdbfe;
+      }
+
+      .delete-btn:hover {
+        background: #fecaca;
+      }
+
+      .empty-message {
+        text-align: center;
+        color: var(--muted);
+        margin-top: 18px;
+        font-size: 1rem;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      @media (max-width: 600px) {
+        .app {
+          padding: 24px 18px;
+        }
+
+        .todo-form {
+          flex-direction: column;
+        }
+
+        .todo-form button {
+          width: 100%;
+          min-height: 48px;
+        }
+
+        .toolbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .clear-btn {
+          width: 100%;
+        }
+
+        .task-item {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .task-actions {
+          width: 100%;
+          justify-content: flex-end;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <h1>Lista de Tarefas</h1>
+
+      <form id="todo-form" class="todo-form">
+        <input
+          type="text"
+          id="todo-input"
+          placeholder="Adicionar nova tarefa..."
+          maxlength="120"
+          autocomplete="off"
+        />
+        <button type="submit">Adicionar</button>
+      </form>
+
+      <div class="toolbar">
+        <div class="filters">
+          <button class="filter-btn active" data-filter="all">Todas</button>
+          <button class="filter-btn" data-filter="active">Pendentes</button>
+          <button class="filter-btn" data-filter="completed">Concluídas</button>
+        </div>
+
+        <button id="clear-completed" class="clear-btn">Limpar concluídas</button>
+      </div>
+
+      <div class="stats">
+        <span id="tasks-counter">0 tarefas</span>
+      </div>
+
+      <ul id="todo-list" class="todo-list"></ul>
+
+      <p id="empty-message" class="empty-message hidden">
+        Nenhuma tarefa por enquanto.
+      </p>
+    </div>
+
+    <script>
+      const STORAGE_KEY = "todo-list-items";
+
+      const form = document.getElementById("todo-form");
+      const input = document.getElementById("todo-input");
+      const list = document.getElementById("todo-list");
+      const emptyMessage = document.getElementById("empty-message");
+      const counter = document.getElementById("tasks-counter");
+      const filterButtons = document.querySelectorAll(".filter-btn");
+      const clearCompletedBtn = document.getElementById("clear-completed");
+
+      let tasks = loadTasks();
+      let currentFilter = "all";
+
+      function loadTasks() {
+        try {
+          const stored = localStorage.getItem(STORAGE_KEY);
+          return stored ? JSON.parse(stored) : [];
+        } catch (error) {
+          console.error("Erro ao carregar tarefas:", error);
+          return [];
+        }
+      }
+
+      function saveTasks() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+      }
+
+      function render() {
+        const filteredTasks = getFilteredTasks();
+
+        list.innerHTML = "";
+
+        if (filteredTasks.length === 0) {
+          emptyMessage.classList.remove("hidden");
+        } else {
+          emptyMessage.classList.add("hidden");
+        }
+
+        filteredTasks.forEach((task) => {
+          const item = document.createElement("li");
+          item.className = `task-item ${task.completed ? "completed" : ""}`;
+
+          const main = document.createElement("div");
+          main.className = "task-main";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = task.completed;
+          checkbox.className = "task-checkbox";
+          checkbox.addEventListener("change", () => toggleTask(task.id));
+
+          const text = document.createElement("span");
+          text.className = "task-text";
+          text.textContent = task.text;
+
+          main.appendChild(checkbox);
+          main.appendChild(text);
+
+          const actions = document.createElement("div");
+          actions.className = "task-actions";
+
+          const editBtn = document.createElement("button");
+          editBtn.textContent = "Editar";
+          editBtn.className = "edit-btn";
+          editBtn.addEventListener("click", () => editTask(task.id));
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "Excluir";
+          deleteBtn.className = "delete-btn";
+          deleteBtn.addEventListener("click", () => deleteTask(task.id));
+
+          actions.appendChild(editBtn);
+          actions.appendChild(deleteBtn);
+
+          item.appendChild(main);
+          item.appendChild(actions);
+
+          list.appendChild(item);
+        });
+
+        updateCounter();
+      }
+
+      function updateCounter() {
+        const total = tasks.length;
+        const completed = tasks.filter((task) => task.completed).length;
+        const active = total - completed;
+
+        if (total === 0) {
+          counter.textContent = "0 tarefas";
+          return;
+        }
+
+        if (currentFilter === "completed") {
+          counter.textContent = `${completed} concluídas`;
+        } else if (currentFilter === "active") {
+          counter.textContent = `${active} pendentes`;
+        } else {
+          counter.textContent = `${total} tarefas`;
+        }
+      }
+
+      function getFilteredTasks() {
+        if (currentFilter === "active") {
+          return tasks.filter((task) => !task.completed);
+        }
+
+        if (currentFilter === "completed") {
+          return tasks.filter((task) => task.completed);
+        }
+
+        return tasks;
+      }
+
+      function addTask(text) {
+        const trimmed = text.trim();
+
+        if (!trimmed) {
+          input.focus();
+          return;
+        }
+
+        tasks.unshift({
+          id: Date.now(),
+          text: trimmed,
+          completed: false,
+        });
+
+        saveTasks();
+        render();
+        input.value = "";
+        input.focus();
+      }
+
+      function toggleTask(taskId) {
+        tasks = tasks.map((task) =>
+          task.id === taskId ? { ...task, completed: !task.completed } : task
+        );
+
+        saveTasks();
+        render();
+      }
+
+      function deleteTask(taskId) {
+        tasks = tasks.filter((task) => task.id !== taskId);
+        saveTasks();
+        render();
+      }
+
+      function editTask(taskId) {
+        const task = tasks.find((item) => item.id === taskId);
+
+        if (!task) return;
+
+        const newText = prompt("Editar tarefa:", task.text);
+
+        if (newText === null) return;
+
+        const trimmed = newText.trim();
+
+        if (!trimmed) {
+          alert("A tarefa não pode ficar vazia.");
+          return;
+        }
+
+        tasks = tasks.map((item) =>
+          item.id === taskId ? { ...item, text: trimmed } : item
+        );
+
+        saveTasks();
+        render();
+      }
+
+      function clearCompleted() {
+        tasks = tasks.filter((task) => !task.completed);
+        saveTasks();
+        render();
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        addTask(input.value);
+      });
+
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          currentFilter = button.dataset.filter;
+          filterButtons.forEach((btn) => btn.classList.toggle("active", btn === button));
+          render();
+        });
+      });
+
+      clearCompletedBtn.addEventListener("click", clearCompleted);
+
+      render();
+    </script>
+  </body>
 </html>
