@@ -1,48 +1,562 @@
 <!DOCTYPE html>
-<html lang="pt"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Santana Drips Global</title><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#FB7701">
-<style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#f5f5f5}header{background:#000;color:#fff;padding:10px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20}.logo{font-weight:900;color:#FB7701;font-size:12px}.lang{font-size:11px;background:#222;border:0;color:#fff;padding:5px 8px;border-radius:20px;max-width:105px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:8px}.card{background:#fff;border-radius:12px;overflow:hidden}.card img{width:100%;height:150px;object-fit:cover}.info{padding:8px;font-size:12px}.preco{color:#FB7701;font-weight:900}.btn{background:#FB7701;color:#fff;border:0;padding:8px;width:100%;border-radius:8px;font-weight:800;margin-top:6px}.banner{padding:9px;text-align:center;display:flex;justify-content:center;gap:6px;align-items:center;font-size:11px}.banner-black{background:#111;color:#fff}.banner-orange{background:#FB7701;color:#fff}.b-btn{border:0;padding:5px 12px;border-radius:20px;font-weight:800;font-size:11px}.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:99;align-items:center;justify-content:center}.card-modal{background:#fff;padding:18px;border-radius:16px;width:90%;max-width:360px}.card-dark{background:#111;color:#fff;padding:18px;border-radius:16px;width:90%;max-width:360px}input{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #ddd}.wpp{position:fixed;bottom:16px;right:16px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:26px}</style></head>
-<body>
-<header><div class="logo" id="logo">SANTANA DRIPS</div><div style="display:flex;gap:6px;align-items:center"><select id="idioma" onchange="mudarLingua()" class="lang"><option value="pt">🇲🇿 PT</option><option value="en">🇺🇸 EN</option><option value="fr">🇫🇷 FR</option><option value="es">🇪🇸 ES</option><option value="zh">🇨🇳 中文</option><option value="ar">🇸🇦 AR</option><option value="de">🇩🇪 DE</option><option value="it">🇮🇹 IT</option><option value="ru">🇷🇺 RU</option><option value="sw">🇹🇿 SW</option><option value="zu">🇿🇦 ZU</option><option value="hi">🇮🇳 HI</option></select>🛒<span id="cart">0</span></div></header>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Santana Drips</title>
+    <style>
+      :root {
+        --bg: #0b0b0f;
+        --panel: rgba(12, 15, 22, 0.8);
+        --panel-soft: rgba(17, 24, 39, 0.76);
+        --primary: #ff9f1c;
+        --primary-2: #ff5e00;
+        --blue: #2563eb;
+        --green: #10b981;
+        --text: #f8fafc;
+        --muted: #d1d5db;
+        --border: rgba(255, 255, 255, 0.14);
+        --shadow: rgba(0, 0, 0, 0.35);
+      }
 
-<div class="banner banner-black" id="loginBanner"><span id="login-text">Entra para notificações</span><button class="b-btn" style="background:#FB7701;color:#fff" onclick="mostrarLogin()" id="login-btn">🔑 ENTRAR</button></div>
-<div class="banner banner-orange" id="pub-banner" style="display:none"><span>👑 MODO DONO ATIVO</span><button class="b-btn" style="background:#000;color:#fff" onclick="document.getElementById('adminBox').style.display='flex'">📦 PUBLICAR</button></div>
-<div class="banner banner-black" style="background:linear-gradient(90deg,#000,#222)"><span id="sub-text">🔥 Subscreve -10% OFF</span><button class="b-btn" style="background:#FB7701;color:#fff" onclick="document.getElementById('subBox').style.display='flex'" id="sub-btn">SUBSCREVER</button></div>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
 
-<div id="subBox" class="modal" onclick="if(event.target==this)this.style.display='none'"><div class="card-modal"><h3 id="sub-title">🔔 Novidades</h3><p id="sub-desc" style="font-size:12px;color:#666;margin:8px 0"></p><input id="sub-nome"><input id="sub-zap"><button class="btn" onclick="subscrever()" id="sub-ok"></button><button onclick="document.getElementById('subBox').style.display='none'" style="background:transparent;border:0;width:100%;margin-top:8px;color:#999" id="sub-fechar"></button></div></div>
-<div id="adminBox" class="modal" onclick="if(event.target==this)this.style.display='none'"><div class="card-dark"><h3 id="pub-title"></h3><input id="token" placeholder="ghp_xxx (1 vez só)" style="background:#222;color:#fff;border:0"><input id="nome"><input id="preco"><input id="img"><button class="btn" onclick="publicar()" id="btn-pub"></button><p id="status" style="font-size:11px;color:#FB7701"></p><button onclick="document.getElementById('adminBox').style.display='none'" style="background:transparent;color:#fff;border:0;width:100%;margin-top:8px">Fechar</button></div></div>
+      html, body {
+        min-height: 100%;
+      }
 
-<div style="padding:8px"><input id="busca" oninput="filtrar()"></div>
-<div id="produtos" class="grid"></div>
-<a class="wpp" href="https://wa.me/258840000000" target="_blank">💬</a>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background:
+          linear-gradient(180deg, rgba(0,0,0,0.56), rgba(0,0,0,0.76)),
+          url('./images/santana-bg.jpg') center/cover no-repeat;
+        background-color: var(--bg);
+        min-height: 100vh;
+        color: var(--text);
+      }
 
-<script>
-const REPO="chihanane01-sys/Santana-drips-"; const SENHA_DONO="santana123";
-const TR={
-pt:{busca:"Procura drip...",comprar:"COMPRAR",banner:"🔥 Subscreve e ganha 10% OFF",btn:"SUBSCREVER",title:"🔔 Recebe Novidades",desc:"Novos drips no teu WhatsApp!",ok:"QUERO 10% OFF",depois:"Depois",nome:"Teu nome",zap:"Teu WhatsApp",login:"Entra para receber notificações de novos produtos",entrar:"🔑 ENTRAR",pub:"📦 PUBLICAR PRODUTO",pubBtn:"🚀 PUBLICAR AUTOMÁTICO",nomePh:"Nome do produto",precoPh:"Preço MT",imgPh:"Link da foto (Google Imagens)"},
-en:{busca:"Search drip...",comprar:"BUY",banner:"🔥 Subscribe & get 10% OFF",btn:"SUBSCRIBE",title:"🔔 Get Updates",desc:"New drips on WhatsApp first!",ok:"GET 10% OFF",depois:"Later",nome:"Your name",zap:"Your WhatsApp",login:"Login to get new product notifications",entrar:"🔑 LOGIN",pub:"📦 PUBLISH PRODUCT",pubBtn:"🚀 PUBLISH NOW",nomePh:"Product name",precoPh:"Price MT",imgPh:"Image link"},
-fr:{busca:"Chercher...",comprar:"ACHETER",banner:"🔥 Abonne-toi -10%",btn:"S'ABONNER",title:"🔔 Nouveautés",desc:"Nouveaux drips sur WhatsApp!",ok:"OBTENIR -10%",depois:"Plus tard",nome:"Ton nom",zap:"Ton WhatsApp",login:"Connecte-toi pour les notifications",entrar:"🔑 ENTRER",pub:"📦 PUBLIER",pubBtn:"🚀 PUBLIER",nomePh:"Nom produit",precoPh:"Prix",imgPh:"Lien photo"},
-es:{busca:"Buscar...",comprar:"COMPRAR",banner:"🔥 Suscríbete -10%",btn:"SUSCRIBIR",title:"🔔 Novedades",desc:"¡Nuevos en WhatsApp!",ok:"QUIERO -10%",depois:"Luego",nome:"Tu nombre",zap:"Tu WhatsApp",login:"Entra para notificaciones",entrar:"🔑 ENTRAR",pub:"📦 PUBLICAR",pubBtn:"🚀 PUBLICAR",nomePh:"Nombre",precoPh:"Precio",imgPh:"Link foto"},
-zh:{busca:"搜索...",comprar:"购买",banner:"🔥 订阅-10%",btn:"订阅",title:"🔔 新品",desc:"WhatsApp通知!",ok:"领取优惠",depois:"稍后",nome:"你的名字",zap:"WhatsApp",login:"登录获取通知",entrar:"🔑 登录",pub:"📦 发布",pubBtn:"🚀 发布",nomePh:"产品名",precoPh:"价格",imgPh:"图片链接"},
-ar:{busca:"بحث...",comprar:"شراء",banner:"🔥 اشترك -10%",btn:"اشتراك",title:"🔔 جديد",desc:"واتساب أولا!",ok:"خصم 10%",depois:"لاحقا",nome:"اسمك",zap:"واتساب",login:"سجل للحصول على إشعارات",entrar:"🔑 دخول",pub:"📦 نشر",pubBtn:"🚀 انشر",nomePh:"اسم المنتج",precoPh:"السعر",imgPh:"رابط الصورة"},
-de:{busca:"Suchen...",comprar:"KAUFEN",banner:"🔥 Abonnieren -10%",btn:"ABONNIEREN",title:"🔔 Neuheiten",desc:"Neu auf WhatsApp!",ok:"10% HOLEN",depois:"Später",nome:"Name",zap:"WhatsApp",login:"Login für Benachrichtigungen",entrar:"🔑 LOGIN",pub:"📦 PUBLISH",pubBtn:"🚀 PUBLISH",nomePh:"Produktname",precoPh:"Preis",imgPh:"Bild Link"},
-it:{busca:"Cerca...",comprar:"COMPRA",banner:"🔥 Iscriviti -10%",btn:"ISCRIVITI",title:"🔔 Novità",desc:"Nuovo su WhatsApp!",ok:"-10%",depois:"Dopo",nome:"Nome",zap:"WhatsApp",login:"Accedi per notifiche",entrar:"🔑 ACCEDI",pub:"📦 PUBBLICA",pubBtn:"🚀 PUBBLICA",nomePh:"Nome prodotto",precoPh:"Prezzo",imgPh:"Link foto"},
-ru:{busca:"Поиск...",comprar:"КУПИТЬ",banner:"🔥 Подпишись -10%",btn:"ПОДПИСАТЬСЯ",title:"🔔 Новинки",desc:"Новое в WhatsApp!",ok:"-10%",depois:"Позже",nome:"Имя",zap:"WhatsApp",login:"Войди для уведомлений",entrar:"🔑 ВХОД",pub:"📦 ПУБЛИКАЦИЯ",pubBtn:"🚀 ОПУБЛИКОВАТЬ",nomePh:"Название",precoPh:"Цена",imgPh:"Ссылка фото"},
-sw:{busca:"Tafuta...",comprar:"NUNUA",banner:"🔥 Jiandikishe -10%",btn:"JIANDIKISHA",title:"🔔 Mpya",desc:"Mpya WhatsApp!",ok:"-10%",depois:"Baadaye",nome:"Jina",zap:"WhatsApp",login:"Ingia kwa arifa",entrar:"🔑 INGIA",pub:"📦 CHAPISHA",pubBtn:"🚀 CHAPISHA",nomePh:"Jina la bidhaa",precoPh:"Bei",imgPh:"Link ya picha"},
-zu:{busca:"Sesha...",comprar:"THENGA",banner:"🔥 Bhalisa -10%",btn:"BHALISA",title:"🔔 Okusha",desc:"Okusha kuWhatsApp!",ok:"-10%",depois:"Kamora",nome:"Igama",zap:"WhatsApp",login:"Ngena ngezaziso",entrar:"🔑 NGENA",pub:"📦 SHICILELA",pubBtn:"🚀 SHICILELA",nomePh:"Igama lomkhiqizo",precoPh:"Intengo",imgPh:"Isixhumanisi"},
-hi:{busca:"खोजें...",comprar:"खरीदें",banner:"🔥 सब्सक्राइब -10%",btn:"सब्सक्राइब",title:"🔔 नया",desc:"WhatsApp पर नया!",ok:"-10%",depois:"बाद में",nome:"नाम",zap:"WhatsApp",login:"नोटिफिकेशन के लिए लॉगिन",entrar:"🔑 लॉगिन",pub:"📦 प्रकाशित",pubBtn:"🚀 प्रकाशित",nomePh:"उत्पाद नाम",precoPh:"कीमत",imgPh:"फोटो लिंक"}
-};
-let LANG=localStorage.getItem('lang')||navigator.language.slice(0,2)||'pt'; if(!TR[LANG]) LANG='pt';
-let todos=[]; let user=JSON.parse(localStorage.getItem('santana_user')||'null');
-function mudarLingua(){LANG=document.getElementById('idioma').value;localStorage.setItem('lang',LANG);aplicar()}
-function aplicar(){let t=TR[LANG];document.getElementById('busca').placeholder=t.busca;document.getElementById('sub-text').innerText=t.banner;document.getElementById('sub-btn').innerText=t.btn;document.getElementById('sub-title').innerText=t.title;document.getElementById('sub-desc').innerText=t.desc;document.getElementById('sub-ok').innerText=t.ok;document.getElementById('sub-fechar').innerText=t.depois;document.getElementById('sub-nome').placeholder=t.nome;document.getElementById('sub-zap').placeholder=t.zap;document.getElementById('login-text').innerText=user?`👋 ${user.nome} | 🔔 ${localStorage.getItem('notif_ativo')?'ON':'Ativar?'}`:t.login;document.getElementById('login-btn').innerText=t.entrar;document.getElementById('pub-title').innerText=t.pub;document.getElementById('btn-pub').innerText=t.pubBtn;document.getElementById('nome').placeholder=t.nomePh;document.getElementById('preco').placeholder=t.precoPh;document.getElementById('img').placeholder=t.imgPh;document.getElementById('logo').innerText=user?`SANTANA 👤${user.nome}`:'SANTANA DRIPS';mostrar(todos)}
-async function carregar(){try{let r=await fetch('produtos.json?v='+Date.now());todos=await r.json()}catch(e){todos=JSON.parse(localStorage.getItem('santana_produtos')||'[]')}if(todos.length==0)todos=[{nome:"Camiseta Santana Preta",preco:1500,img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"}];document.getElementById('idioma').value=LANG;aplicar(); if(window.location.search.includes(SENHA_DONO)||localStorage.getItem('gh_token')){document.getElementById('pub-banner').style.display='flex';}}
-function mostrar(l){let t=TR[LANG];document.getElementById('produtos').innerHTML=l.map(p=>`<div class="card"><img src="${p.img}"><div class="info"><b>${p.nome}</b><div class="preco">${p.preco} MT</div><button class="btn" onclick="add('${p.nome}')">${t.comprar}</button></div></div>`).join('')}
-function filtrar(){let q=document.getElementById('busca').value.toLowerCase();mostrar(todos.filter(p=>p.nome.toLowerCase().includes(q)))}
-function add(n){document.getElementById('cart').innerText=parseInt(document.getElementById('cart').innerText)+1;window.open(`https://wa.me/258840000000?text=Quero%20${encodeURIComponent(n)}`,'_blank')}
-function mostrarLogin(){if(user){pedirNotificacao();return;}let t=TR[LANG];let nome=prompt(t.nome+":");if(!nome)return;let zap=prompt(t.zap+":");if(!zap)return;user={nome,zap,id:Date.now(),lang:LANG};localStorage.setItem('santana_user',JSON.stringify(user));aplicar();pedirNotificacao();}
-function pedirNotificacao(){if(!("Notification" in window))return alert("Sem suporte");Notification.requestPermission().then(p=>{if(p==="granted"){localStorage.setItem('notif_ativo','1');new Notification("Santana Drips 🔥",{body:TR[LANG].desc});aplicar();}})}
-function subscrever(){let nome=document.getElementById('sub-nome').value,zap=document.getElementById('sub-zap').value;if(!nome||!zap)return alert("Preenche!");let lista=JSON.parse(localStorage.getItem('assinantes')||'[]');lista.push({nome,zap,lang:LANG,data:new Date().toISOString()});localStorage.setItem('assinantes',JSON.stringify(lista));document.getElementById('subBox').style.display='none';window.open(`https://wa.me/258840000000?text=Nova sub [${LANG}]: ${nome}-${zap}`,'_blank');}
-async function publicar(){const nome=document.getElementById('nome').value,preco=document.getElementById('preco').value,img=document.getElementById('img').value,token=document.getElementById('token').value;if(!nome||!preco||!img)return alert("Preenche!");if(token){localStorage.setItem('gh_token',token);document.getElementById('status').innerText="Publicando...";try{let res=await fetch(`https://api.github.com/repos/${REPO}/contents/produtos.json`,{headers:{Authorization:`token ${token}`}});let data=await res.json();let produtos=JSON.parse(atob(data.content));produtos.unshift({nome,preco,img});let novo=btoa(unescape(encodeURIComponent(JSON.stringify(produtos,null,2))));await fetch(`https://api.github.com/repos/${REPO}/contents/produtos.json`,{method:"PUT",headers:{Authorization:`token ${token}`},body:JSON.stringify({message:"novo "+nome,content:novo,sha:data.sha})});document.getElementById('status').innerText="✅ Publicado!";if(Notification.permission==="granted")new Notification("Novo Drip! 🔥",{body:nome+" - "+preco+" MT"});carregar()}catch(e){document.getElementById('status').innerText="Erro: "+e.message}}else{let p=JSON.parse(localStorage.getItem('santana_produtos')||'[]');p.unshift({nome,preco,img});localStorage.setItem('santana_produtos',JSON.stringify(p));document.getElementById('status').innerText="✅ Publicado local";carregar()}}
-document.getElementById('token').value=localStorage.getItem('gh_token')||"";carregar();
-</script></body></html>
+      .app {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 18px 18px 40px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 12px;
+        border-bottom: 1px solid var(--border);
+        background: rgba(0, 0, 0, 0.18);
+        backdrop-filter: blur(8px);
+        border-radius: 14px;
+        margin-bottom: 26px;
+      }
+
+      .brand {
+        font-size: clamp(1.4rem, 2.4vw, 2.4rem);
+        font-weight: 900;
+        letter-spacing: 1px;
+      }
+
+      .brand span {
+        color: var(--primary);
+      }
+
+      .top-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .pill {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--border);
+        color: var(--text);
+        padding: 9px 14px;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        font-weight: 700;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 22px;
+        align-items: center;
+        padding: 16px 8px 18px;
+      }
+
+      .hero-copy {
+        padding: 10px 8px;
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(2.5rem, 6vw, 5.2rem);
+        line-height: 0.94;
+        margin-bottom: 18px;
+        text-transform: uppercase;
+        font-weight: 900;
+      }
+
+      .hero-copy h1 .yellow {
+        color: var(--primary);
+      }
+
+      .highlight {
+        display: inline-block;
+        background: rgba(255, 159, 28, 0.12);
+        color: #ffd98d;
+        border: 1px solid rgba(255, 159, 28, 0.32);
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-weight: 800;
+        margin-bottom: 18px;
+      }
+
+      .hero-copy p {
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.7;
+        max-width: 620px;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52px;
+        padding: 0 22px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: white;
+        font-weight: 800;
+        border: none;
+        cursor: pointer;
+      }
+
+      .cta.primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      }
+
+      .cta.secondary {
+        background: linear-gradient(135deg, var(--blue), #1d4ed8);
+      }
+
+      .hero-card {
+        background: rgba(0, 0, 0, 0.18);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        padding: 18px;
+        box-shadow: 0 18px 40px var(--shadow);
+      }
+
+      .avatar {
+        width: 100%;
+        aspect-ratio: 1.1;
+        border-radius: 18px;
+        background:
+          linear-gradient(180deg, rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.32)),
+          url('./images/santana-bg.jpg') center/cover no-repeat;
+        border: 1px solid var(--border);
+      }
+
+      .benefits {
+        margin-top: 22px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .benefit {
+        background: rgba(17, 24, 39, 0.72);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px 14px;
+        text-align: center;
+        font-weight: 700;
+      }
+
+      .benefit strong {
+        display: block;
+        font-size: 0.8rem;
+        letter-spacing: 0.06em;
+        margin-bottom: 8px;
+        color: #facc15;
+      }
+
+      .section {
+        background: rgba(9, 12, 18, 0.7);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        margin-top: 28px;
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .section-header h2 {
+        font-size: clamp(1.3rem, 2vw, 2rem);
+      }
+
+      .catalog-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .product-card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .product-image {
+        width: 100%;
+        aspect-ratio: 1;
+        object-fit: cover;
+        display: block;
+        background: #111827;
+      }
+
+      .product-body {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex: 1;
+      }
+
+      .product-body h3 {
+        font-size: 1.15rem;
+      }
+
+      .product-price {
+        color: #fcd34d;
+        font-weight: 900;
+        font-size: 1.2rem;
+      }
+
+      .product-desc {
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 0.96rem;
+      }
+
+      .product-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: auto;
+      }
+
+      .button {
+        border: none;
+        border-radius: 10px;
+        padding: 12px 14px;
+        cursor: pointer;
+        color: white;
+        font-weight: 800;
+      }
+
+      .button.primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+        flex: 1;
+      }
+
+      .button.secondary {
+        background: linear-gradient(135deg, var(--blue), #1d4ed8);
+        flex: 1;
+      }
+
+      .customer-box {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+
+      .input-box {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px;
+      }
+
+      .input-box h3 {
+        margin-bottom: 12px;
+      }
+
+      .input-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      input, textarea {
+        width: 100%;
+        border: 1px solid var(--border);
+        background: rgba(255,255,255,0.04);
+        color: white;
+        border-radius: 10px;
+        padding: 12px 14px;
+        outline: none;
+      }
+
+      input::placeholder, textarea::placeholder {
+        color: rgba(255,255,255,0.6);
+      }
+
+      input:focus, textarea:focus {
+        border-color: rgba(96, 165, 250, 0.8);
+      }
+
+      .status {
+        min-height: 24px;
+        margin-top: 14px;
+        color: #86efac;
+        font-weight: 700;
+      }
+
+      .status.error {
+        color: #fca5a5;
+      }
+
+      @media (max-width: 900px) {
+        .hero, .customer-box, .catalog-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .benefits {
+          grid-template-columns: repeat(2, minmax(0,1fr));
+        }
+      }
+
+      @media (max-width: 600px) {
+        .topbar, .section-header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .hero-actions, .input-row {
+          flex-direction: column;
+        }
+
+        .benefits {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">SANTANA <span>DRIPS</span></div>
+        <div class="top-actions">
+          <span class="pill">🏷️ Estilo que combina</span>
+          <span class="pill">📲 WhatsApp</span>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="hero-copy">
+            <div class="highlight">🔥 Produtos premium</div>
+            <h1>Drips <span class="yellow">Santana</span></h1>
+            <p>
+              Roupas, acessórios e looks completos para quem quer aparecer com estilo,
+              conforto e atitude. Todos os itens com visual profissional e atenção aos detalhes.
+            </p>
+            <div class="hero-actions">
+              <a class="cta primary" href="https://wa.me/258859613672?text=Ol%C3%A1%2C%20quero%20fazer%20um%20pedido%20da%20Santana%20Drips." target="_blank" rel="noopener noreferrer">💳 Pagar agora</a>
+              <a class="cta secondary" href="https://wa.me/27837835874?text=Ol%C3%A1%2C%20quero%20falar%20com%20o%20official%20da%20Santana%20Drips." target="_blank" rel="noopener noreferrer">💬 Falar com official</a>
+            </div>
+          </div>
+
+          <div class="hero-card">
+            <div class="avatar" aria-label="Imagem de destaque da Santana Drips"></div>
+          </div>
+        </section>
+
+        <section class="benefits" aria-label="Benefícios da marca">
+          <div class="benefit"><strong>Qualidade</strong>Produtos premium</div>
+          <div class="benefit"><strong>Conforto</strong>Material confortável</div>
+          <div class="benefit"><strong>Estilo</strong>Look moderno</div>
+          <div class="benefit"><strong>Preço justo</strong>Valor acessível</div>
+        </section>
+
+        <section class="section">
+          <div class="section-header">
+            <h2>Catálogo</h2>
+            <span class="pill">Produtos em destaque</span>
+          </div>
+          <div id="catalog" class="catalog-grid"></div>
+        </section>
+
+        <section class="section">
+          <div class="section-header">
+            <h2>Perfil do cliente</h2>
+            <span class="pill">Dados para contato</span>
+          </div>
+
+          <div class="customer-box">
+            <div class="input-box">
+              <h3>Guardar dados do cliente</h3>
+              <div class="input-row">
+                <input id="customer-name" type="text" placeholder="Seu nome" />
+              </div>
+              <div class="input-row">
+                <input id="customer-email" type="email" placeholder="Seu email" />
+              </div>
+              <div class="input-row">
+                <input id="customer-whatsapp" type="tel" placeholder="Seu WhatsApp" />
+              </div>
+              <button id="save-customer" class="button primary" type="button">Salvar perfil</button>
+              <div id="customer-status" class="status" aria-live="polite"></div>
+            </div>
+
+            <div class="input-box">
+              <h3>Notificar por WhatsApp</h3>
+              <div class="input-row">
+                <input id="notify-message" type="text" placeholder="Mensagem para notificar" value="Olá, quero saber mais sobre a Santana Drips." />
+              </div>
+              <button id="send-wa" class="button secondary" type="button">Enviar mensagem</button>
+              <div class="status">Obs.: em HTML puro, isso abre uma conversa no WhatsApp. Para envio automático, é necessário backend + WhatsApp Business API.</div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const OWNER_NUMBER = '258859613672';
+      const PRODUCTS_KEY = 'santana_products';
+      const CUSTOMER_KEY = 'santana_customer';
+
+      const defaultProducts = [
+        {
+          id: Date.now() + 1,
+          name: 'Camiseta Premium',
+          price: '800 MT',
+          image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80',
+          description: 'Camiseta de algodão com visual moderno e confortável.'
+        },
+        {
+          id: Date.now() + 2,
+          name: 'Boné Street',
+          price: '1200 MT',
+          image: 'https://images.unsplash.com/photo-1588850561407-ed78c282e8b4?auto=format&fit=crop&w=900&q=80',
+          description: 'Boné com acabamento premium e corte confortável.'
+        },
+        {
+          id: Date.now() + 3,
+          name: 'Casaco Drift',
+          price: '2600 MT',
+          image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80',
+          description: 'Casaco para dias frios com estilo urbano e premium.'
+        }
+      ];
+
+      function getProducts() {
+        try {
+          const stored = JSON.parse(localStorage.getItem(PRODUCTS_KEY) || 'null');
+          return Array.isArray(stored) && stored.length ? stored : defaultProducts;
+        } catch {
+          return defaultProducts;
+        }
+      }
+
+      function renderProducts() {
+        const catalog = document.getElementById('catalog');
+        const products = getProducts();
+
+        catalog.innerHTML = products.map((product) => `
+          <article class="product-card">
+            <img class="product-image" src="${product.image}" alt="${product.name}" />
+            <div class="product-body">
+              <h3>${product.name}</h3>
+              <div class="product-price">${product.price}</div>
+              <div class="product-desc">${product.description}</div>
+              <div class="product-actions">
+                <button class="button primary" type="button" data-buy="${product.name}">Comprar</button>
+                <button class="button secondary" type="button" data-message="${product.name}">WhatsApp</button>
+              </div>
+            </div>
+          </article>
+        `).join('');
+
+        document.querySelectorAll('[data-buy]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const productName = button.getAttribute('data-buy');
+            window.open(`https://wa.me/${OWNER_NUMBER}?text=${encodeURIComponent('Olá, quero comprar o produto: ' + productName)}`, '_blank');
+          });
+        });
+
+        document.querySelectorAll('[data-message]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const productName = button.getAttribute('data-message');
+            window.open(`https://wa.me/${OWNER_NUMBER}?text=${encodeURIComponent('Quero saber mais sobre o produto: ' + productName)}`, '_blank');
+          });
+        });
+      }
+
+      function saveCustomer() {
+        const name = document.getElementById('customer-name').value.trim();
+        const email = document.getElementById('customer-email').value.trim();
+        const whatsapp = document.getElementById('customer-whatsapp').value.trim();
+        const status = document.getElementById('customer-status');
+
+        if (!name || !email || !whatsapp) {
+          status.classList.add('error');
+          status.textContent = 'Preencha nome, email e WhatsApp.';
+          return;
+        }
+
+        const data = { name, email, whatsapp, savedAt: new Date().toISOString() };
+        localStorage.setItem(CUSTOMER_KEY, JSON.stringify(data));
+        status.classList.remove('error');
+        status.textContent = 'Perfil salvo com sucesso.';
+      }
+
+      function loadCustomer() {
+        const saved = localStorage.getItem(CUSTOMER_KEY);
+        if (!saved) return;
+
+        try {
+          const data = JSON.parse(saved);
+          document.getElementById('customer-name').value = data.name || '';
+          document.getElementById('customer-email').value = data.email || '';
+          document.getElementById('customer-whatsapp').value = data.whatsapp || '';
+        } catch (error) {
+          console.error('Erro ao carregar cliente:', error);
+        }
+      }
+
+      document.getElementById('save-customer').addEventListener('click', saveCustomer);
+      document.getElementById('send-wa').addEventListener('click', () => {
+        const message = document.getElementById('notify-message').value.trim() || 'Olá, quero saber mais sobre a Santana Drips.';
+        const url = `https://wa.me/${OWNER_NUMBER}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+      });
+
+      renderProducts();
+      loadCustomer();
+    </script>
+  </body>
+</html>
