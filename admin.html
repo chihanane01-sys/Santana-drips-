@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Santana Drips</title>
+    <style>
+      :root {
+        --bg: #0f172a;
+        --panel: #111827;
+        --panel-soft: #1f2937;
+        --primary: #f59e0b;
+        --primary-2: #f97316;
+        --secondary: #2563eb;
+        --text: #f8fafc;
+        --muted: #cbd5e1;
+        --border: rgba(255,255,255,0.12);
+        --danger: #ef4444;
+        --success: #10b981;
+      }
+
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(135deg, #020617, #111827);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 24px;
+      }
+
+      .panel {
+        width: 100%;
+        max-width: 860px;
+        background: rgba(15, 23, 42, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 18px 50px rgba(0,0,0,0.3);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      h1 {
+        font-size: clamp(1.8rem, 3vw, 2.5rem);
+        margin-bottom: 18px;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        margin-bottom: 20px;
+      }
+
+      .login-box,
+      .product-box {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px;
+      }
+
+      .login-box {
+        display: grid;
+        gap: 12px;
+      }
+
+      input, textarea {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 14px;
+        background: rgba(255,255,255,0.04);
+        color: white;
+        outline: none;
+      }
+
+      input:focus, textarea:focus {
+        border-color: rgba(96,165,250,0.8);
+      }
+
+      input::placeholder, textarea::placeholder {
+        color: rgba(255,255,255,0.65);
+      }
+
+      button {
+        border: none;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font-weight: 800;
+        cursor: pointer;
+        color: white;
+      }
+
+      .primary {
+        background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      }
+
+      .secondary {
+        background: linear-gradient(135deg, var(--secondary), #1d4ed8);
+      }
+
+      .danger {
+        background: linear-gradient(135deg, #ef4444, #b91c1c);
+      }
+
+      .status {
+        min-height: 22px;
+        margin-top: 12px;
+        color: var(--success);
+        font-weight: 700;
+      }
+
+      .status.error {
+        color: var(--danger);
+      }
+
+      .product-box {
+        display: grid;
+        gap: 12px;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .product-list {
+        margin-top: 20px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 14px;
+      }
+
+      .item strong { display: block; }
+      .item span { color: var(--muted); }
+
+      .actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      @media (max-width: 600px) {
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="panel">
+      <div id="login-view">
+        <h1>Admin Santana Drips</h1>
+        <p class="subtitle">Acesso restrito para publicar produtos e avisos.</p>
+
+        <div class="login-box">
+          <input id="admin-pin" type="password" placeholder="Digite o PIN do admin" />
+          <button class="primary" type="button" id="login-btn">Entrar</button>
+          <div id="login-status" class="status" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <div id="admin-view" class="hidden">
+        <h1>Publicar produtos</h1>
+        <p class="subtitle">Só o admin pode ver esta área.</p>
+
+        <div class="product-box">
+          <div class="grid-2">
+            <input id="prod-name" type="text" placeholder="Nome do produto" />
+            <input id="prod-price" type="text" placeholder="Preço (ex: 1200 MT)" />
+          </div>
+
+          <input id="prod-image" type="url" placeholder="URL da imagem" />
+          <textarea id="prod-desc" rows="4" placeholder="Descrição do produto"></textarea>
+
+          <div class="actions">
+            <button class="primary" type="button" id="save-product">Salvar produto</button>
+            <button class="secondary" type="button" id="notify-wa">Avisar por WhatsApp</button>
+            <button class="danger" type="button" id="logout-btn">Sair</button>
+          </div>
+
+          <div id="save-status" class="status" aria-live="polite"></div>
+        </div>
+
+        <div class="product-list" id="admin-product-list"></div>
+      </div>
+    </div>
+
+    <script>
+      const PIN = 'santana123';
+      const PRODUCTS_KEY = 'santana_products';
+      const OWNER_NUMBER = '258859613672';
+
+      const loginView = document.getElementById('login-view');
+      const adminView = document.getElementById('admin-view');
+      const loginStatus = document.getElementById('login-status');
+      const saveStatus = document.getElementById('save-status');
+
+      function isLogged() {
+        return sessionStorage.getItem('santana_admin_logged') === 'true';
+      }
+
+      function showView() {
+        if (isLogged()) {
+          loginView.classList.add('hidden');
+          adminView.classList.remove('hidden');
+          renderProductsAdmin();
+        } else {
+          loginView.classList.remove('hidden');
+          adminView.classList.add('hidden');
+        }
+      }
+
+      function getProducts() {
+        try {
+          return JSON.parse(localStorage.getItem(PRODUCTS_KEY) || '[]');
+        } catch {
+          return [];
+        }
+      }
+
+      function saveProducts(products) {
+        localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+      }
+
+      document.getElementById('login-btn').addEventListener('click', () => {
+        const pin = document.getElementById('admin-pin').value.trim();
+        if (pin === PIN) {
+          sessionStorage.setItem('santana_admin_logged', 'true');
+          showView();
+          loginStatus.textContent = '';
+        } else {
+          loginStatus.classList.add('error');
+          loginStatus.textContent = 'PIN incorreto.';
+        }
+      });
+
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        sessionStorage.removeItem('santana_admin_logged');
+        showView();
+      });
+
+      document.getElementById('save-product').addEventListener('click', () => {
+        const name = document.getElementById('prod-name').value.trim();
+        const price = document.getElementById('prod-price').value.trim();
+        const image = document.getElementById('prod-image').value.trim();
+        const description = document.getElementById('prod-desc').value.trim();
+
+        if (!name || !price || !image || !description) {
+          saveStatus.classList.add('error');
+          saveStatus.textContent = 'Preencha todos os campos.';
+          return;
+        }
+
+        const products = getProducts();
+        products.unshift({
+          id: Date.now(),
+          name,
+          price,
+          image,
+          description
+        });
+
+        saveProducts(products);
+        saveStatus.classList.remove('error');
+        saveStatus.textContent = 'Produto salvo com sucesso.';
+
+        document.getElementById('prod-name').value = '';
+        document.getElementById('prod-price').value = '';
+        document.getElementById('prod-image').value = '';
+        document.getElementById('prod-desc').value = '';
+
+        renderProductsAdmin();
+      });
+
+      function renderProductsAdmin() {
+        const list = document.getElementById('admin-product-list');
+        const products = getProducts();
+
+        if (!products.length) {
+          list.innerHTML = '<div class="item"><div><strong>Nenhum produto</strong><span>Adicione o primeiro item do catálogo.</span></div></div>';
+          return;
+        }
+
+        list.innerHTML = products.map((product) => `
+          <div class="item">
+            <div>
+              <strong>${product.name}</strong>
+              <span>${product.price}</span>
+            </div>
+            <div class="actions">
+              <button class="danger" type="button" data-delete="${product.id}">Excluir</button>
+            </div>
+          </div>
+        `).join('');
+
+        document.querySelectorAll('[data-delete]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const id = Number(button.getAttribute('data-delete'));
+            const next = getProducts().filter((product) => product.id !== id);
+            saveProducts(next);
+            renderProductsAdmin();
+          });
+        });
+      }
+
+      document.getElementById('notify-wa').addEventListener('click', () => {
+        const message = encodeURIComponent('Olá, tenho uma nova atualização da Santana Drips.');
+        window.open(`https://wa.me/${OWNER_NUMBER}?text=${message}`, '_blank');
+      });
+
+      showView();
+    </script>
+  </body>
+</html>
